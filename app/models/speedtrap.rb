@@ -2,7 +2,17 @@ require 'open-uri'
 require 'nokogiri'
 
 class Speedtrap
-  def self.fetchlive
+  include Mongoid::Document
+
+  field :name, type: String
+  field :road, type: String
+  field :direction, type: String
+  field :limit, type: Integer
+
+  field :latitude, type: Float
+  field :longitude, type: Float
+
+  def self.fetchlive(preserve = false)
   	address = Nokogiri::HTML(open("http://tanel.jairus.ee/kiiruskaamerad.html"))
   	javascript = address.css('script').text.split("locations =")[1].split("var map")[0].gsub("\n", "")
   	elements = javascript.scan(/\[\'(.*?)\'\]/)
@@ -22,6 +32,22 @@ class Speedtrap
   		cam["limit"] = data[3].gsub("'", "")
 
   		speedtraps.push(cam)
+
+      if preserve
+        begin
+          unless self.where(latitude: cam["latitude"], longitude: cam["longitude"]).exists?
+            puts "Adding '#{cam["name"]}' to database"
+            self.create(name: cam["name"],
+                        road: cam["road"],
+                        direction: cam["direction"],
+                        limit: cam["limit"],
+                        latitude: cam["latitude"],
+                        longitude: cam["longitude"])
+          end
+        rescue StandardError
+          puts "Could not add speedtrap to database."
+        end
+      end
   	end
   	return speedtraps
   end
