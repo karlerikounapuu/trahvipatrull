@@ -1,24 +1,3 @@
-# README
+# Trahvipatrull
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Trahvipatrull is a simple solution which scrapes speedtraps and police patrol data from web and serves it over REST API.
